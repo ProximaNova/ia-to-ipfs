@@ -12,7 +12,7 @@ Please note that this is currently a low-effort thing, so use at your own risk a
 1. GNU/Linux, I was using Ubuntu and the Bash shell
 3. This script: https://github.com/john-corcoran/internetarchive-downloader - was copied to https://github.com/ProximaNova/ia-to-ipfs/tree/main/internetarchive-downloader
 4. Prerequisites and requirements as stated in "john-corcoran/internetarchive-downloader" and "john-corcoran/internetarchive-downloader/requirements.txt"
-5. IPFS: https://ipfs.tech/#install
+5. InterPlanetary File System (IPFS): https://ipfs.tech/#install
 
 ## Usage
 1. Open a terminal program (CLI).
@@ -22,20 +22,20 @@ youtube-T8Xsi0Dne8o
 20040106-bbs-veggie
 youtube-19oYvXhQbWc
 ```
-3. Set a variable to the list of IA item IDs that you want to download. Run `path1=/path/to/ids`.
+3. Set a variable to the list of IA item IDs that you want to download. Run `path1=/path/to/ids.txt`.
 4. Set a variable to 1; this is the folder index number. Run `foldernumber=1`.
 5. Set another variable to 1; this is the line index number, so which line in ids.txt to pull an ID from. Run `linenumber=1`.
 6. Create two text files. One that contains your archive.org login email address: "s1.txt". One that contains your archive.org login password in plain text: "s2.txt". These are used to download login-required archive.org items. If you want to delete these s* files later, run `shred -u [filename]`. For more important OPSEC info, see john-corcoran/internetarchive-downloader/README.md
-7. Set variables to the secret files. Run `path2=/path/to/s1` and `path3=/path/to/s2`.
+7. Set variables to the secret files. Run `path2=/path/to/s1.txt` and `path3=/path/to/s2.txt`.
 8. Run `cd /path/to/a/completely/empty/folder/` - then add ia_downloader.py to this folder (can also be ran via `python3 ia_downloader.py [...]`).
-9. Run ia_downloader.py, maybe with "--threads 1" and "--resume". What I ran: `v4=$(tail -n +$linenumber $path1/ids.txt | head -n 1); date -u; ./ia_downloader.py download -i $v4 --credentials "$(cat $path2/s1.txt)" "$(cat $path3/s2.txt)" --output "$foldernumber+$v4"; date -u; cd "$foldernumber+$v4"; v3=$(ls); cd $v3; echo "Moving..."; mv -n * ..; date -u; cd ..; rm -R $v3; cd ..; echo "foldernumber: $foldernumber"; echo "linenumber: $linenumber"; foldernumber=$(expr $foldernumber + 1); linenumber=$(expr $linenumber + 1)`
+9. Run ia_downloader.py, maybe with "--threads 1" and "--resume". What I ran: `v4=$(tail -n +$linenumber $path1 | head -n 1); date -u; ./ia_downloader.py download -i $v4 --credentials "$(cat $path2)" "$(cat $path3)" --output "$foldernumber+$v4"; date -u; cd "$foldernumber+$v4"; v3=$(ls); cd $v3; echo "Moving..."; mv -n * ..; date -u; cd ..; rm -R $v3; cd ..; echo "foldernumber: $foldernumber"; echo "linenumber: $linenumber"; foldernumber=$(expr $foldernumber + 1); linenumber=$(expr $linenumber + 1)`
 10. Run "!!; !!" - or however many more "; !!" you need for the number of items you want to download. Understand that "!!; !!" runs the previous command twice, so if you ran any commands after the previous command that could be bad.
 11. After downloading the items that you want, run `cd 1+*`
 12. Run something like this: `v2=$(find .. -maxdepth 1 -type d | sort | tail -n +3 | wc -l); v1=2` - v2 is roughly the total folders/items you downloaded and v1 is the index number of the next folder.
 13. Make empty text files "cids.txt" and "index.html". cids.txt contains a list of CIDs in two formats. index.html is an HTML file where LI elements will be added to it. After you add some LI tags to it you can add the text that goes at the top of HTML documents to it to make it more valid (such as the TITLE tag). Don't add ending HTML document tags and stuff to the .html file.
-14. Set variables to the folder(s) of those two files. Run `path4=/path/to/cids` and `path5=/path/to/index`.
-15. Run `h1=$(pwd | sed "s/.*+/https:\/\/archive.org\/details\//g"); h2=$(ipfs add -rHQ .); h3=$(echo -n $h2; echo -n " = "; ipfs cid base32 $h2); echo $h3 >> $path4/cids.txt; ipfs ls $h2 | head -n 5; ipfs pin add $h2 > /dev/null; find . -type f -delete; find . -type d -delete; tail -n 3 $path4/cids.txt; h00=$(echo -n '<li>'; echo -n "$h1" | sed "s/.*\///g"; echo -n ': <a href="ipfs://'; tail -n1 $path4/cids.txt | sed "s/.* //g"); h5=$(h4=$(echo $h1 | sed "s/.*\///g"); echo -n $h00; echo -n '">'; ipfs cat $h2/"$h4"_meta.xml | grep "<title>" | sed "s/ \? \?<\/\?title>//g" | tr -d \\n; echo -n "</a> - "; ipfs cat $h2/"$h4"_meta.xml | grep "<subject>" | sed "s/;/,/g" | sed "s/ \? \?<\/\?subject>//g" | tr -d \\n; echo "</li>"); echo $h5 >> $path5/index.html; tail -n1 $path5/index.html`
-16. Run `cd ../$v1+*; v1=$(expr $v1 + 1); echo -n "$v1 out of $v2 at "; pwd; h1=$(pwd | sed "s/.*+/https:\/\/archive.org\/details\//g"); h2=$(ipfs add -rHQ .); h3=$(echo -n $h2; echo -n " = "; ipfs cid base32 $h2); echo $h3 >> $path4/cids.txt; ipfs ls $h2 | head -n 5; ipfs pin add $h2 > /dev/null; find . -type f -delete; find . -type d -delete; tail -n 3 $path4/cids.txt; h00=$(echo -n '<li>'; echo -n "$h1" | sed "s/.*\///g"; echo -n ': <a href="ipfs://'; tail -n1 $path4/cids.txt | sed "s/.* //g"); h5=$(h4=$(echo $h1 | sed "s/.*\///g"); echo -n $h00; echo -n '">'; ipfs cat $h2/"$h4"_meta.xml | grep "<title>" | sed "s/ \? \?<\/\?title>//g" | tr -d \\n; echo -n "</a> - "; ipfs cat $h2/"$h4"_meta.xml | grep "<subject>" | sed "s/;/,/g" | sed "s/ \? \?<\/\?subject>//g" | tr -d \\n; echo "</li>"); echo $h5 >> $path5/index.html; tail -n1 $path5/index.html`
+14. Set variables to those two files. Run `path4=/path/to/cids.txt` and `path5=/path/to/index.html`.
+15. Run `h1=$(pwd | sed "s/.*+/https:\/\/archive.org\/details\//g"); h2=$(ipfs add -rHQ .); h3=$(echo -n $h2; echo -n " = "; ipfs cid base32 $h2); echo $h3 >> $path4; ipfs ls $h2 | head -n 5; ipfs pin add $h2 > /dev/null; find . -type f -delete; find . -type d -delete; tail -n 3 $path4; h00=$(echo -n '<li>'; echo -n "$h1" | sed "s/.*\///g"; echo -n ': <a href="ipfs://'; tail -n1 $path4 | sed "s/.* //g"); h5=$(h4=$(echo $h1 | sed "s/.*\///g"); echo -n $h00; echo -n '">'; ipfs cat $h2/"$h4"_meta.xml | grep "<title>" | sed "s/ \? \?<\/\?title>//g" | tr -d \\n; echo -n "</a> - "; ipfs cat $h2/"$h4"_meta.xml | grep "<subject>" | sed "s/;/,/g" | sed "s/ \? \?<\/\?subject>//g" | tr -d \\n; echo "</li>"); echo $h5 >> $path5; tail -n1 $path5`
+16. Run `cd ../$v1+*; v1=$(expr $v1 + 1); echo -n "$v1 out of $v2 at "; pwd; h1=$(pwd | sed "s/.*+/https:\/\/archive.org\/details\//g"); h2=$(ipfs add -rHQ .); h3=$(echo -n $h2; echo -n " = "; ipfs cid base32 $h2); echo $h3 >> $path4; ipfs ls $h2 | head -n 5; ipfs pin add $h2 > /dev/null; find . -type f -delete; find . -type d -delete; tail -n 3 $path4; h00=$(echo -n '<li>'; echo -n "$h1" | sed "s/.*\///g"; echo -n ': <a href="ipfs://'; tail -n1 $path4 | sed "s/.* //g"); h5=$(h4=$(echo $h1 | sed "s/.*\///g"); echo -n $h00; echo -n '">'; ipfs cat $h2/"$h4"_meta.xml | grep "<title>" | sed "s/ \? \?<\/\?title>//g" | tr -d \\n; echo -n "</a> - "; ipfs cat $h2/"$h4"_meta.xml | grep "<subject>" | sed "s/;/,/g" | sed "s/ \? \?<\/\?subject>//g" | tr -d \\n; echo "</li>"); echo $h5 >> $path5; tail -n1 $path5`
 17. Run "!!; !!" - or however many more "; !!" you need for the number of items you want to pin.
 
 ## Bugs and problems
@@ -46,3 +46,4 @@ youtube-19oYvXhQbWc
 * Commands could be better or more simple
 * Usage could be made easier
 * IPFS CIDs don't have enough feed and sneed. Make an account at https://www.pinata.cloud/ because Pinata can help seed smaller pinsets.
+* Bugs/problems as stated in github.com/john-corcoran/internetarchive-downloader
