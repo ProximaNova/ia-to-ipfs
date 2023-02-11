@@ -1,12 +1,18 @@
 # ia-to-ipfs
 Convert Internet Archive items to IPFS: these commands help convert data under https://archive.org/details/[ID] into IPFS CIDs.
 
-# Reasons
+## Reasons
 1. In 2023-02-05 the Internet Archive instigated even more cringe censorship, so if an item is loginwalled you can download it and provide unrestricted access to it if the CID is seedeed enough. 
 2. This is helpful to organize files and have them indexed in an HTML file.
 3. Use this to support the decentralized web.
 
-# Usage
+## Requirements
+1. GNU/Linux, I was using Ubuntu and the Bash shell
+3. This script: https://github.com/john-corcoran/internetarchive-downloader - was copied to https://github.com/ProximaNova/ia-to-ipfs/tree/main/internetarchive-downloader
+4. Prerequisites and requirements as stated in "john-corcoran/internetarchive-downloader" and "john-corcoran/internetarchive-downloader/requirements.txt"
+5. IPFS: https://ipfs.tech/#install
+
+## Usage
 Please note that this is currently a low-effort thing, so use at your own risk and understand the "code".
 
 ```
