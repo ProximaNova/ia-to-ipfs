@@ -43,10 +43,13 @@ youtube-19oYvXhQbWc
 * I saw it move up too many directories one time (could have bad results - see `rm -R` above), don't know what caused that
 * Messes up if a filename of a file in archive.org starts with a hyphen (-)
 * All $path* variables must not contain spaces
-* Might not work if *_meta.xml contains multiple subject fields.
 * Commands could be better or more simple
 * Usage could be made easier
 * IPFS CIDs don't have enough feed and sneed. Make an account at https://www.pinata.cloud/ because Pinata can help seed smaller pinsets.
 * Bugs/problems as stated in github.com/john-corcoran/internetarchive-downloader
 * Instead of downloading everything first then running ipfs, it could be changed to download an item then pin it, download the next item then pin it, etc. Doing this versus how it is currently done depends on how much the items are at risk of being deleted off of Internet Archive; the current method assumes that uploads are at-risk.
 * Does not seem to be a big problem, but something to keep an eye on: "[ipfs: datetime:] ERROR provider.queue queue/queue.go:125 Failed to enqueue cid: leveldb: closed"
+
+Fixed?:
+<br>&#x2a; Might not work if file `[...]_meta.xml` contains multiple subject fields.
+<br>&#x2a;&#x2a; Non-extensively-tested fix: `cat /path/to/itemid_meta.xml | grep "<title>" | sed "s/ \? \?<\/\?title>//g" | tr -d \\n; echo -n "</a> - "; cat /path/to/itemid_meta.xml | grep "<subject>" | sed "s/;/,/g" | perl -pE "s/\n/, /g" | perl -pE "s/, $/\n/g" | sed "s/ \? \?<\/\?subject>//g"`
