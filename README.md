@@ -41,7 +41,6 @@ youtube-19oYvXhQbWc
 
 ## Bugs and problems
 * I saw it move up too many directories one time (could have bad results - see `rm -R` above), don't know what caused that
-* Messes up if a filename of a file in archive.org starts with a hyphen (-)
 * All $path* variables must not contain spaces
 * Commands could be better or more simple
 * Usage could be made easier
@@ -53,3 +52,5 @@ youtube-19oYvXhQbWc
 Fixed?:
 <br>&#x2a; Might not work if file `[...]_meta.xml` contains multiple subject fields.
 <br>&#x2a;&#x2a; Non-extensively-tested fix: `cat /path/to/itemid_meta.xml | grep "<title>" | sed "s/ \? \?<\/\?title>//g" | tr -d \\n; echo -n "</a> - "; cat /path/to/itemid_meta.xml | grep "<subject>" | sed "s/;/,/g" | perl -pE "s/\n/, /g" | perl -pE "s/, $/\n/g" | sed "s/ \? \?<\/\?subject>//g"`
+<br>&#x2a; Messes up if a filename of a file in archive.org starts with a hyphen (-)
+<br>&#x2a;&#x2a; Untested fix: `v4=$(tail -n +$linenumber $path1 | head -n 1); date -u; ./ia_downloader.py download -i $v4 --credentials "$(cat $path2)" "$(cat $path3)" --output "$foldernumber+$v4"; date -u; cd "$foldernumber+$v4"; v3=$(ls); cd ./$v3; echo "Moving..."; mv -n ./* ..; date -u; cd ..; rm -R ./$v3; cd ..; echo "foldernumber: $foldernumber"; echo "linenumber: $linenumber"; foldernumber=$(expr $foldernumber + 1); linenumber=$(expr $linenumber + 1)`
