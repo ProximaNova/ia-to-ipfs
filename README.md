@@ -42,6 +42,7 @@ youtube-19oYvXhQbWc
 ## Bugs and problems
 * I saw it move up too many directories one time (could have bad results - see `rm -R` above), don't know what caused that
 * All $path* variables must not contain spaces
+* When adding to IPFS, cancel via one or more ctrl+c then redo the previous command skips over the unfinished current folder and goes to work on the next one.
 * Commands could be better or more simple
 * Usage could be made easier
 * IPFS CIDs don't have enough feed and sneed. Make an account at https://www.pinata.cloud/ because Pinata can help seed smaller pinsets.
