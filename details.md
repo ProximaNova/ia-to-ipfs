@@ -4,7 +4,7 @@
 
 `cd ../$v1+*; v1=$(expr $v1 + 1); echo -n "$v1 out of $v2 at "; pwd; h1=$(pwd | sed "s/.*+/https:\/\/archive.org\/details\//g"); h2=$(ipfs add -rHQ .); h3=$(echo -n $h2; echo -n " = "; ipfs cid base32 $h2); echo $h3 >> $path4; ipfs ls $h2 | head -n 5; ipfs pin add $h2 > /dev/null; find . -type f -delete; find . -type d -delete; tail -n 3 $path4; h00=$(echo -n '<li>'; echo -n "$h1" | sed "s/.*\///g"; echo -n ': <a href="ipfs://'; tail -n1 $path4 | sed "s/.* //g"); h5=$(h4=$(echo $h1 | sed "s/.*\///g"); echo -n $h00; echo -n '">'; ipfs cat $h2/"$h4"_meta.xml | grep "<title>" | sed "s/ \? \?<\/\?title>//g" | tr -d \\n; echo -n "</a> - "; ipfs cat $h2/"$h4"_meta.xml | grep "<subject>" | sed "s/;/,/g" | sed "s/ \? \?<\/\?subject>//g" | tr -d \\n; echo "</li>"); echo $h5 >> $path5; tail -n1 $path5`
 
-In the updated version, part of it is replaced with `cat /path/to/itemid_meta.xml | grep "<title>" | sed "s/ \? \?<\/\?title>//g" | tr -d \\n; echo -n "</a> - "; cat /path/to/itemid_meta.xml | grep "<subject>" | sed "s/;/,/g" | perl -pE "s/\n/, /g" | perl -pE "s/, $/\n/g" | sed "s/ \? \?<\/\?subject>//g"`.
+In the updated version, part of it is replaced with `grep "<subject>" | sed "s/;/,/g" | perl -pE "s/\n/, /g" | perl -pE "s/, $/\n/g" | sed "s/ \? \?<\/\?subject>//g"`.
 
 ## Explained
 
@@ -47,29 +47,15 @@ In the updated version, part of it is replaced with `cat /path/to/itemid_meta.xm
 - `tail -n1 $path4 | sed "s/.* //g"` I think is the bottom right "keyword" of cids.txt.
 - Text `tail -n1 $path4 | sed "s/.* //g"` could probably be simplified to `ipfs cid base32 $h2`
 
-[1] `h5=$(h4=$(echo $h1 | sed "s/.*\///g"); echo -n $h00; echo -n '">'; ipfs cat $h2/"$h4"_meta.xml | grep "<title>" | sed "s/ \? \?<\/\?title>//g" | tr -d \\n; echo -n "</a> - "; ipfs cat $h2/"$h4"_meta.xml | grep "<subject>" | sed "s/;/,/g" | sed "s/ \? \?<\/\?subject>//g" | tr -d \\n; echo "</li>")`
+`h5=$(h4=$(echo $h1 | sed "s/.*\///g"); echo -n $h00; echo -n '">'; ipfs cat $h2/"$h4"_meta.xml | grep "<title>" | sed "s/ \? \?<\/\?title>//g" | tr -d \\n; echo -n "</a> - "; ipfs cat $h2/"$h4"_meta.xml | grep "<subject>" | sed "s/;/,/g" | sed "s/ \? \?<\/\?subject>//g" | tr -d \\n; echo "</li>")`
 - Set $h5 to some text
-
-In [1]: `h4=$(echo $h1 | sed "s/.*\///g")`
-- Set $h4 to $h1 but the ID only
-
-In [1]: `echo -n $h00; echo -n '">'`
-- Echo the first part of a list item and hyperlink ($h00) then the next part of the hyperlink.
-
-In [1]: `ipfs cat $h2/"$h4"_meta.xml | grep "<title>"`
-- Search [CIDv0]/[ID]_meta.xml and return line matching "`<title>`", piped into the next command
-
-In [1]: `sed "s/ \? \?<\/\?title>//g" | tr -d \\n`
-- Remove "[zero or one space here][zero or one space here]<[zero or one forward slash here]title>" and newlines
-
-In [1]: `echo -n "</a> - "`
-- Close the hyperlink
-
-In [1]: `ipfs cat $h2/"$h4"_meta.xml | grep "<subject>"`
-- Search file "[CIDv0]/[ID]_meta.xml" and return line(s) matching "`<subject>`", piped into the next command
-
-In [1]: `sed "s/;/,/g" | sed "s/ \? \?<\/\?subject>//g" | tr -d \\n; echo "</li>"`
-- Replace ";" with "," then remove "[zero or one space here x 2]<[zero or one forward slash here]subject>" and newlines then close the list item
+- `h4=$(echo $h1 | sed "s/.*\///g")` - set $h4 to $h1 but the ID only
+- `echo -n $h00; echo -n '">'` - echo the first part of a list item and hyperlink ($h00) then the next part of the hyperlink
+- `ipfs cat $h2/"$h4"_meta.xml | grep "<title>"` - search [CIDv0]/[ID]_meta.xml and return line matching "`<title>`", piped into the next command
+- `sed "s/ \? \?<\/\?title>//g" | tr -d \\n` - remove "[zero or one space here][zero or one space here]<[zero or one forward slash here]title>" and newlines
+- `echo -n "</a> - "` - close the hyperlink
+- `ipfs cat $h2/"$h4"_meta.xml | grep "<subject>"` - search file "[CIDv0]/[ID]_meta.xml" and return line(s) matching "`<subject>`", piped into the next command
+- `sed "s/;/,/g" | sed "s/ \? \?<\/\?subject>//g" | tr -d \\n; echo "</li>"` - replace ";" with "," then remove "[zero or one space here x 2]<[zero or one forward slash here]subject>" and newlines then close the list item
 
 `echo $h5 >> $path5; tail -n1 $path5`
 - Append $h5 ("bunch of text") to index.html then show the last line of index.html
