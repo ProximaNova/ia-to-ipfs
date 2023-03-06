@@ -407,7 +407,7 @@ def file_download(
     ) = download_details
     start_time = datetime.datetime.now()
     file_size_split_limit = 10485760  # 10MB
-#-   dest_file_path = os.path.join(os.path.join(output_folder, identifier), ia_file_name)
+#-    dest_file_path = os.path.join(os.path.join(output_folder, identifier), ia_file_name)
     dest_file_path = os.path.join(output_folder, ia_file_name)
     dest_file_name = ia_file_name
     expected_file_size = ia_file_size
@@ -470,7 +470,7 @@ def file_download(
         response_list = internetarchive.download(
             identifier,
             files=[ia_file_name],
-#-            destdir=output_folder,
+            destdir=output_folder,
             on_the_fly=True,
             return_responses=True,
         )
@@ -526,7 +526,7 @@ def file_download(
                     ia_file_size,
                     ia_md5,
                     ia_mtime,
-#-                    output_folder,
+                    output_folder,
                     hash_pool,
                     resume_flag,
                     1,  # split_count
@@ -574,19 +574,19 @@ def file_download(
                 "'{}' - error occurred with file chunks - file could not be reconstructed"
                 " and has therefore not been downloaded successfully".format(ia_file_name)
             )
-#-        else:
+        else:
             # Merge the chunks into the final file and delete each chunk as we go
-#-            block_size = 4096 * 1024
-#-            with open(dest_file_path, "wb") as output_file_handler:
-#-                for chunk_counter in range(split_count):
-#-                    chunk_file_path = "{}.{}".format(dest_file_path, chunk_counter)
-#-                    with open(chunk_file_path, "rb") as input_file_handler:
-#-                        while True:
-#-                            data = input_file_handler.read(block_size)
-#-                            if not data:
-#-                                break
-#-                            output_file_handler.write(data)
-#-                    os.remove(chunk_file_path)
+            block_size = 4096 * 1024
+            with open(dest_file_path, "wb") as output_file_handler:
+                for chunk_counter in range(split_count):
+                    chunk_file_path = "{}.{}".format(dest_file_path, chunk_counter)
+                    with open(chunk_file_path, "rb") as input_file_handler:
+                        while True:
+                            data = input_file_handler.read(block_size)
+                            if not data:
+                                break
+                            output_file_handler.write(data)
+                    os.remove(chunk_file_path)
     else:
         # In testing, downloads can timeout occasionally with requests.exceptions.ConnectionError
         # raised; catch and attempt download five times before giving up
@@ -663,9 +663,9 @@ def file_download(
                             "{}'{}'{} - beginning download".format(bold_grey, dest_file_name, blue)
                         )
                         file_write_mode = "wb"
-#-                        pathlib.Path(os.path.dirname(dest_file_path)).mkdir(
-#-                            parents=True, exist_ok=True
-#-                        )
+                        pathlib.Path(os.path.dirname(dest_file_path)).mkdir(
+                            parents=True, exist_ok=True
+                        )
 
                     # If we're wanting to be able to resume file transfers, we will use the
                     # internetarchive.download function to just return the PreparedResponse object
@@ -921,7 +921,7 @@ def download(
     MAX_RETRIES = 5
 
     # Create output folder if it doesn't already exist
-#-    pathlib.Path(output_folder).mkdir(parents=True, exist_ok=True)
+    pathlib.Path(output_folder).mkdir(parents=True, exist_ok=True)
 
     log.info("'{}' contents will be downloaded to '{}'".format(identifier, output_folder))
 
@@ -1104,12 +1104,11 @@ def download(
 
         # Check if the output folder already seems to have all the files we expect
         # Check if files in download queue equal files in folder
-#-       identifier_output_folder = os.path.join(output_folder, identifier)
-        identifier_output_folder = os.path.join(output_folder)
+#-        identifier_output_folder = os.path.join(output_folder, identifier)
         if (
-#-           os.path.isdir(identifier_output_folder)
+#-            os.path.isdir(identifier_output_folder)
             os.path.isdir(output_folder)
-#-           and len(file_paths_in_folder(identifier_output_folder)) > 0
+#-            and len(file_paths_in_folder(identifier_output_folder)) > 0
             and len(file_paths_in_folder(output_folder)) > 0
         ):
             size_verification = verify(
