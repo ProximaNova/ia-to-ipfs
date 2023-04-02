@@ -1,9 +1,3 @@
-https://github.com/ProximaNova/ia-to-ipfs
-About
-Convert Internet Archive items to IPFS
-- Readme
-- GPL-3.0 license
-
 # ia-to-ipfs
 Convert Internet Archive items to IPFS: these commands help convert data under https://archive.org/details/[ID] into IPFS CIDs.
 
