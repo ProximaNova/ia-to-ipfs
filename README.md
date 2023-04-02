@@ -1,3 +1,9 @@
+https://github.com/ProximaNova/ia-to-ipfs
+About
+Convert Internet Archive items to IPFS
+- Readme
+- GPL-3.0 license
+
 # ia-to-ipfs
 Convert Internet Archive items to IPFS: these commands help convert data under https://archive.org/details/[ID] into IPFS CIDs.
 
@@ -45,13 +51,17 @@ youtube-19oYvXhQbWc
 * When adding to IPFS, cancel via one or more ctrl+c then redo the previous command skips over the unfinished current folder and goes to work on the next one.
 * Commands could be better or more simple
 * Usage could be made easier
-* IPFS CIDs don't have enough feed and sneed. Make an account at https://www.pinata.cloud/ because Pinata can help seed smaller pinsets.
+* IPFS CIDs don't have enough feed and sneed. Make an account at https://www.pinata.cloud/ and https://web3.storage/ because Pinata and w3s can help seed smaller pinsets.
 * Bugs/problems as stated in github.com/john-corcoran/internetarchive-downloader
 * Instead of downloading everything first then running ipfs, it could be changed to download an item then pin it, download the next item then pin it, etc. Doing this versus how it is currently done depends on how much the items are at risk of being deleted off of Internet Archive; the current method assumes that uploads are at-risk.
 * Does not seem to be a big problem, but something to keep an eye on: "[ipfs: datetime:] ERROR provider.queue queue/queue.go:125 Failed to enqueue cid: leveldb: closed"
+* If file "*_meta.xml" contains HTML entities then it messes up how the XML file is parsed. Example from index number 2234, identifier 736...f74: source_code=`<subject>tag1; tag2; text &amp; text; a &amp; b; tag3; tag4</subject>`, rendered_xml=`<subject>tag1; tag2; text & text; a & b; tag3; tag4</subject>`, parsed_text_for_html=`tag1, tag2, text &amp, text, a &amp, b, tag3, tag4`, what_parsed_text_for_html_should_look_like=`tag1, tag2, text &amp;, text, a &amp;, b, tag3, tag4`
 
 Fixed?:
-<br>&#x2a; Might not work if file `[...]_meta.xml` contains multiple subject fields.
-<br>&#x2a;&#x2a; Non-extensively-tested fix: `cat /path/to/itemid_meta.xml | grep "<title>" | sed "s/ \? \?<\/\?title>//g" | tr -d \\n; echo -n "</a> - "; cat /path/to/itemid_meta.xml | grep "<subject>" | sed "s/;/,/g" | perl -pE "s/\n/, /g" | perl -pE "s/, $/\n/g" | sed "s/ \? \?<\/\?subject>//g"`
 <br>&#x2a; Messes up if a filename of a file in archive.org starts with a hyphen (-)
 <br>&#x2a;&#x2a; Untested fix: `v4=$(tail -n +$linenumber $path1 | head -n 1); date -u; ./ia_downloader.py download -i $v4 --credentials "$(cat $path2)" "$(cat $path3)" --output "$foldernumber+$v4"; date -u; cd "$foldernumber+$v4"; v3=$(ls); cd ./$v3; echo "Moving..."; mv -n ./* ..; date -u; cd ..; rm -R ./$v3; cd ..; echo "foldernumber: $foldernumber"; echo "linenumber: $linenumber"; foldernumber=$(expr $foldernumber + 1); linenumber=$(expr $linenumber + 1)`
+
+Fixed (probably):
+<br>&#x2a; Might not work if file `[...]_meta.xml` contains multiple subject fields.
+<br>&#x2a;&#x2a; Tested fix: `cat /path/to/itemid_meta.xml | grep "<title>" | sed "s/ \? \?<\/\?title>//g" | tr -d \\n; echo -n "</a> - "; cat /path/to/itemid_meta.xml | grep "<subject>" | sed "s/;/,/g" | perl -pE "s/\n/, /g" | perl -pE "s/, $/\n/g" | sed "s/ \? \?<\/\?subject>//g"`
+<br>&#x2a;&#x2a;&#x2a; Tested with multiple subject fields in index number 1863, identifier 653...332
