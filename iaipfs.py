@@ -21,20 +21,27 @@ import re
 parser = argparse.ArgumentParser()
 # -- pin or not, folder to add, cid log, item index
 parser.add_argument("-p", "--pin", action="store_true",
-    required=False, help="""(optional) if specified,
+    required=False, help="""(Optional) if specified,
     this pins the CID; pin it if you want to keep the
-    data for a long time""")
+    data for a long time.""")
 parser.add_argument("-f", "--folder", type=str,
-    required=True, help="""path to the folder which only
+    required=True, help="""Path to the folder which only
     contains data from one IA item, the folder's name
-    should be the item identifier""")
+    should be the item identifier. Make sure that the
+    path works properly when wrapped in double quote
+    characters (\") - e.g., no '!' character in Linux.
+    Paths under the folder (like filenames in the IA item)
+    can have whatever characters, so don't worry about those
+    files' names.""")
 parser.add_argument("-c", "--cidlog", type=str,
-    required=True, help="""initially empty text file to
-    log the CIDs in""")
+    required=True, help="""Initially empty text file to
+    log the CIDs in. Make sure that the path works properly
+    when wrapped in double quote characters.""")
 parser.add_argument("-x", "--htmlindex", type=str,
-    required=True, help="""initially empty text file to
+    required=True, help="""Initially empty text file to
     contain some HTML data which acts as an index of IA
-    items in IPFS""")
+    items in IPFS. Path should work when wrapped in
+    double quotes.""")
 args = parser.parse_args()
 folder = args.folder
 folderfolder = os.path.dirname(folder)
@@ -48,13 +55,13 @@ print("Folder: " + folder)
 print("CID log: " + cidlog)
 print("HTML index: " + htmlindex)
 
-cmd="ipfs add -rHQ " + folder + " > " + tempfile
+cmd="ipfs add -rHQ \"" + folder + "\" > \"" + tempfile + "\""
 os.system(cmd)
 
 with open(tempfile, "r") as file:
     data1 = file.read().rstrip()
 
-cmd="ipfs cid base32 " + data1 + " > " + tempfile
+cmd="ipfs cid base32 " + data1 + " > \"" + tempfile + "\""
 os.system(cmd)
 
 with open(tempfile, "r") as file:
@@ -83,7 +90,7 @@ with open(tempfile, "r") as file:
 # addedunix = data1 + "_in_ipfs_" + str(time.time())
 # os.rename(folder, os.path.join(folderfolder, addedunix))
 
-cmd="ipfs cat " + data1 + "/" + folderlast + "_meta.xml > " + tempfile
+cmd="ipfs cat " + data1 + "/" + folderlast + "_meta.xml > \"" + tempfile + "\""
 os.system(cmd)
 
 subject = ""
