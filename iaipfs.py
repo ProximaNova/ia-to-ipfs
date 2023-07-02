@@ -103,9 +103,10 @@ with open(tempfile, "r") as file3:
         if match2:
             subject += str(re.findall("<subject>.*", line5))
 file3.close()
-title2 = re.sub("\[?'?<\/?title>'?\]?", "", str(title))
-subject2 = re.sub("<\/subject>'\]\['<subject>", "; ", str(subject))
-subject3 = re.sub("\[?'?<\/?subject>'?\]?", "", str(subject2))
+# -- doesn't work well if both ' and " are in subject or title, works if one or the other is in the title or subject
+title2 = re.sub("\[?'?\"?<\/?title>\"?'?\]?", "", str(title))
+subject2 = re.sub("<\/subject>'?\"?\]\['?\"?<subject>", "; ", str(subject))
+subject3 = re.sub("\[?'?\"?<\/?subject>\"?'?\]?", "", str(subject2))
 
 file4 = open(htmlindex, "a")
 file4.write("<li>" + folderlast + ": <a href=\"ipfs://" + data2 + "\">" + title2 + "</a> - " + re.sub(";", ",", subject3) + "</li>\n")
