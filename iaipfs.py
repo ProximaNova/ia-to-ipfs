@@ -55,11 +55,11 @@ print("Folder: " + folder)
 print("CID log: " + cidlog)
 print("HTML index: " + htmlindex)
 
-cmd="ipfs add -rHQ \"" + folder + "\" > \"" + tempfile + "\""
-os.system(cmd)
-
-with open(tempfile, "r") as file:
-    data1 = file.read().rstrip()
+folderraw = r'{}'.format(folder)
+data0 = subprocess.Popen(['ipfs', 'add', '-rHQ', folderraw], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+out, err = data0.communicate()
+errcode = data0.returncode
+data1 = re.sub(r"\\n'", "", re.sub("b'", "", str(out)))
 
 cmd="ipfs cid base32 " + data1 + " > \"" + tempfile + "\""
 os.system(cmd)
@@ -132,11 +132,7 @@ if args.pin:
     cmd="ipfs pin add " + data1
     os.system(cmd)
 
+# -- thanks
 # -- https://stackoverflow.com/questions/20816921/python-escape-file-path-for-command-line-command
 # -- search "use popen" -> https://www.youtube.com/watch?v=VlfLqG_qjx0
-# -- windows 7 cmd
-# -- >>> import subprocess
-# -- >>> cmd = "echo aaaaa"
-# -- >>> subprocess.Popen(cmd, shell=True)
-# -- <subprocess.Popen object at 0x00000000006D7850>
-# -- >>> aaaaa
+# -- https://stackoverflow.com/questions/4415259/convert-regular-python-string-to-raw-string
