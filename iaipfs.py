@@ -131,3 +131,12 @@ with open(tempfile, "r") as file:
 if args.pin:
     cmd="ipfs pin add " + data1
     os.system(cmd)
+
+# -- https://stackoverflow.com/questions/20816921/python-escape-file-path-for-command-line-command
+# -- search "use popen" -> https://www.youtube.com/watch?v=VlfLqG_qjx0
+# -- windows 7 cmd
+# -- >>> import subprocess
+# -- >>> cmd = "echo aaaaa"
+# -- >>> subprocess.Popen(cmd, shell=True)
+# -- <subprocess.Popen object at 0x00000000006D7850>
+# -- >>> aaaaa
