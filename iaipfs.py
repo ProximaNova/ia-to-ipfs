@@ -61,11 +61,10 @@ out, err = data0.communicate()
 errcode = data0.returncode
 data1 = re.sub(r"\\n'", "", re.sub("b'", "", str(out)))
 
-cmd="ipfs cid base32 " + data1 + " > \"" + tempfile + "\""
-os.system(cmd)
-
-with open(tempfile, "r") as file:
-    data2 = file.read().rstrip()
+data00 = subprocess.Popen(['ipfs', 'cid', 'base32', data1], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+out, err = data00.communicate()
+errcode = data00.returncode
+data2 = re.sub(r"\\n'", "", re.sub("b'", "", str(out)))
 
 file1 = open(cidlog, "a")
 file1.write(data1 + " = " + data2 + "\n")
